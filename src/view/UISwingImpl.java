@@ -9,15 +9,7 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-
+import javax.swing.*;
 
 
 public class UISwingImpl implements UI {
@@ -97,6 +89,11 @@ public class UISwingImpl implements UI {
 		window.dispose();
 		System.exit(0);
 	}
-	
-	
+
+	@Override
+	public int showOptionPane(int guessCount) {
+		int choice = JOptionPane.showConfirmDialog(null,
+				"Correct, it took " + guessCount + " guesses\nContinue?");
+		return choice;
+	}
 }

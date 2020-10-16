@@ -1,30 +1,35 @@
 package controller;
 
-import dao.GameDAO;
-import dao.NameAndAverage;
-import model.GameStrategy;
+import dao.PlayerDAO;
+import dao.Result;
+import dao.ResultDAO;
+import model.Game;
 import view.UI;
 
-import javax.swing.*;
 import java.util.List;
 
 public class Controller {
 
     UI ui;
-    GameDAO dao;
-    GameStrategy logic;
+    Game logic;
+    PlayerDAO playerDAO;
+    ResultDAO resultDAO;
     boolean newGame = false;
 
     public void setUi(UI ui) {
         this.ui = ui;
     }
 
-    public void setDao(GameDAO dao) {
-        this.dao = dao;
+    public void setLogic(Game logic) {
+        this.logic = logic;
     }
 
-    public void setLogic(GameStrategy logic) {
-        this.logic = logic;
+    public void setPlayerDAO(PlayerDAO playerDAO) {
+        this.playerDAO = playerDAO;
+    }
+
+    public void setResultDAO(ResultDAO resultDAO) {
+        this.resultDAO = resultDAO;
     }
 
     public void run() {
@@ -43,23 +48,11 @@ public class Controller {
         compareGoalWithGuess();
         saveResult(playerId);
         showScoreboard();
-        showJOptionPane();
+        showOptionPane();
     }
 
     private void generateRandomNumber() {
-        logic.setGoal();
-    }
-
-    private void showJOptionPane() {
-        int choice = JOptionPane.showConfirmDialog(null,
-                "Correct, it took " + logic.getGuessCount() + " guesses\nContinue?");
-        if(choice == 0) {
-            logic.setGuessCount(0);
-            newGame = true;
-        } else {
-            newGame = false;
-            ui.exit();
-        }
+        logic.generateRandomNumber();
     }
 
     private int loginPlayer() {
@@ -68,7 +61,7 @@ public class Controller {
         int playerId;
         do {
             String name = ui.getString();
-            playerId = dao.getPlayerId(name);
+            playerId = playerDAO.getPlayerId(name);
             if(playerId == 0) {
                 ui.addString("User: " + name + " is not in database, try again\n");
             }
@@ -78,17 +71,15 @@ public class Controller {
     }
 
     private void userGuess() {
-
-        boolean validGuess = false;
+        String guess = "";
         do {
-            String guess = ui.getString();
-            if((guess.matches("[0-9]+")) && guess.length() == 4) {
+            guess = ui.getString();
+            if(logic.validateGuess(guess) == true) {
                 logic.setGuess(guess);
-                validGuess = true;
             } else {
                 ui.addString("Not a valid guess: " + guess + "\n");
             }
-        } while (validGuess == false);
+        } while (logic.validateGuess(guess) == false);
     }
 
     private void showGameWindow() {
@@ -113,19 +104,30 @@ public class Controller {
         }
     }
 
+    private void showOptionPane() {
+        int choice = ui.showOptionPane(logic.getGuessCount());
+        if(choice == 0) {
+            logic.setGuessCount(0);
+            newGame = true;
+        } else {
+            newGame = false;
+            ui.exit();
+        }
+    }
+
     private void showScoreboard() {
-        List<NameAndAverage> topList = dao.getTopTen();
+        List<Result> results = resultDAO.getTopTen();
         ui.addString("Top Ten List\n    Player     Average\n");
 
         int pos = 1;
-        for(NameAndAverage player : topList) {
+        for(Result player : results) {
             ui.addString(String.format("%3d %-10s%5.2f%n", pos, player.getName(), player.getAverage()));
             pos ++;
         }
     }
 
     private void saveResult(int playerId) {
-        dao.saveResult(logic.getGuessCount(), playerId);
+        resultDAO.saveResult(logic.getGuessCount(), playerId);
     }
 
 }

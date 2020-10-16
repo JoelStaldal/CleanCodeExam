@@ -1,11 +1,11 @@
 package dao;
 
-public class NameAndAverage {
+public class Result {
 
     String name;
     double average;
 
-    public NameAndAverage(String name, double average) {
+    public Result(String name, double average) {
         this.name = name;
         this.average = average;
     }

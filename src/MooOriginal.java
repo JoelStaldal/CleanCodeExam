@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 
-public class Moo {
+public class MooOriginal {
 	static Connection connection;
 	static Statement stmt;
 	static ResultSet rs;
