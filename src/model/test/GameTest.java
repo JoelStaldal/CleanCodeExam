@@ -2,16 +2,11 @@ package model.test;
 
 import model.Game;
 import model.GameStrategy;
-import model.MooGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.OngoingStubbing;
-
-import java.util.function.BooleanSupplier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 class GameTest {
@@ -23,38 +18,42 @@ class GameTest {
     void setup() {
         game = new Game();
         gameType = mock(GameStrategy.class);
+        game.setGameType(gameType);
     }
 
-    //@Test
-    void testSetGameType() {
-
-    }
-
-    //@Test
+    @Test
     void testCheckBullsAndCows() {
-
+        when(gameType.checkBullsAndCows(nullable(String.class), nullable(String.class))).thenReturn("BBBB,");
+        String actual = game.checkBullsAndCows();
+        String expResult = "BBBB,";
+        assertEquals(expResult, actual);
+        verify(gameType).checkBullsAndCows(nullable(String.class), nullable(String.class));
     }
 
     @Test
     void testGenerateRandomNumber() {
         when(gameType.generateRandomNumber()).thenReturn("1234");
-        String actual = gameType.generateRandomNumber();
+        game.generateRandomNumber();
+        String actual = game.getGoal();
         String expResult = "1234";
         assertEquals(expResult, actual);
+        verify(gameType).generateRandomNumber();
     }
 
     @Test
-    void testValidateGuessTrue() {
-        when(gameType.validGuess("1234")).thenReturn(true);
-        boolean actual = gameType.validGuess("1234");
+    void testValidateGuessReturnValueTrue() {
+        when(gameType.validateGuess("1234")).thenReturn(true);
+        boolean actual = game.validateGuess("1234");
         assertTrue(actual);
+        verify(gameType).validateGuess("1234");
     }
 
     @Test
-    void testValidateGuessFalse() {
-        when(gameType.validGuess("msdfghj")).thenReturn(false);
-        boolean actual = gameType.validGuess("msdfghj");
+    void testValidateGuessReturnValueFalse() {
+        when(gameType.validateGuess("lorem")).thenReturn(false);
+        boolean actual = game.validateGuess("lorem");
         assertFalse(actual);
+        verify(gameType).validateGuess("lorem");
     }
 
     @Test
@@ -77,7 +76,7 @@ class GameTest {
         game.setGuess("1234");
         String actual = game.getGuess();
         String expResult = "1234";
-        assertEquals(actual, expResult);
+        assertEquals(expResult, actual);
     }
 
     @Test
@@ -85,11 +84,11 @@ class GameTest {
         game.setGuess("1234");
         String actual = game.getGuess();
         String expResult = "1234";
-        assertEquals(actual, expResult);
+        assertEquals(expResult, actual);
 
         int actualCount = game.getGuessCount();
         int expCountResult = 1;
-        assertEquals(actualCount, expCountResult);
+        assertEquals(expCountResult, actualCount);
     }
 
     @Test

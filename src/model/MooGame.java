@@ -43,7 +43,7 @@ public class MooGame implements GameStrategy {
     }
 
     @Override
-    public boolean validGuess(String guess) {
+    public boolean validateGuess(String guess) {
         return ((guess.matches("[0-9]+")) && guess.length() == 4);
     }
 }

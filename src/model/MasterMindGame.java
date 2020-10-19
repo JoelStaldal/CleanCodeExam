@@ -40,7 +40,7 @@ public class MasterMindGame implements GameStrategy {
     }
 
     @Override
-    public boolean validGuess(String guess) {
+    public boolean validateGuess(String guess) {
         return ((guess.matches("[1-6]+")) && guess.length() == 4);
     }
 }

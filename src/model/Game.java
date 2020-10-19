@@ -20,7 +20,7 @@ public class Game {
     }
 
     public boolean validateGuess(String guess) {
-        return gameType.validGuess(guess);
+        return gameType.validateGuess(guess);
     }
 
     public int getGuessCount() {
